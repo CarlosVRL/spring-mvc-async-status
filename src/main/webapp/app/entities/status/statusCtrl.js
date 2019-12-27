@@ -29,7 +29,6 @@
 
         load();
         function load() {
-            $log.debug("loading status at " + (new Date()).toLocaleTimeString() + "...");
             getStatus();
             $timeout(function() {
                 if ($state.current.name == "status" && vm.data != null) {
@@ -42,7 +41,6 @@
         // Controller
         //
         vm.addJob = function() {
-            $log.debug("adding job...");
             Status.addJob()
                 .then(function success(res) {
                     $log.debug(res);
