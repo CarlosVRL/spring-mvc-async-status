@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Future;
 
 @RestController
 @RequestMapping("/api")
@@ -30,12 +29,10 @@ public class StatusResource {
     @Timed
     public ResponseEntity<List<StatusJob>> getStatus() {
         List<StatusJob> status = new ArrayList<>();
-        statusQueueService
-            .iterator()
-            .forEachRemaining(statusJob -> {
-                System.out.println(statusJob);
-                status.add(statusJob);
-            });
+        statusQueueService.iterator()
+            .forEachRemaining(longStatusJobEntry ->
+                status.add(longStatusJobEntry.getValue())
+            );
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
 
@@ -46,31 +43,17 @@ public class StatusResource {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/status/take-job")
-    @Timed
-    public ResponseEntity<StatusJob> takeJob() {
-        StatusJob res = statusQueueService.take();
-        return new ResponseEntity<>(res, HttpStatus.OK);
-    }
-
     @PostMapping("/status/execute")
     @Timed
     public ResponseEntity<Long> execute() {
-        Future<String> future = statusQueueService.add("my job");
-
-
-
-//        StatusJob service = new StatusJob();
-//        Future<String> future = statusExecutor.submit(service);
-//        BlockingQueue<Runnable> queue = statusExecutor.getQueue();
-//        queue.contains(service);
-//        Runnable r  = queue.take();
-
-//        try {
-//            result = future.get();
-//        } catch (InterruptedException | ExecutionException e) {
-//            e.printStackTrace();
-//        }
+        statusQueueService.add("my job");
         return new ResponseEntity<>(0L, HttpStatus.OK);
+    }
+
+    @PostMapping("/status/execute-and-wait")
+    @Timed
+    public ResponseEntity<StatusJob> executeAndWait() throws Exception {
+        StatusJob result = statusQueueService.add("execute-and-wait");
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }

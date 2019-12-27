@@ -32,7 +32,7 @@
             $log.debug("loading status at " + (new Date()).toLocaleTimeString() + "...");
             getStatus();
             $timeout(function() {
-                if ($state.current.name == "status") {
+                if ($state.current.name == "status" && vm.data != null) {
                     load();
                 }
             }, vm.SECONDS_AS_MILLI);
@@ -52,26 +52,18 @@
             getStatus();
         }
 
-        vm.takeJob = function() {
-            $log.debug("taking job...");
-            Status.takeJob()
-                .then(function success(res) {
-                    $log.debug(res);
-                }, function error(err) {
-                    $log.debug(err)
-                });
-            getStatus();
-        }
-
         //
         // Implementation
         //
         function getStatus() {
             Status.getStatus()
                 .then(function success(res) {
+                    $log.debug('s');
                     vm.data = res.data;
                 }, function error(err) {
+                    $log.debug('e');
                     $log.debug(err);
+                    vm.data = null;
                 });
         }
     }

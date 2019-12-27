@@ -11,8 +11,7 @@
     function Status($http) {
         var service = {
             getStatus: getStatus,
-            addJob: addJob,
-            takeJob: takeJob
+            addJob: addJob
         };
 
         function getStatus() {
@@ -27,16 +26,6 @@
             return $http({
                 method: 'POST',
                 url: 'api/status/add-job'
-            });
-        }
-
-        function takeJob() {
-            return $http({
-                method: 'POST',
-                url: 'api/status/take-job',
-                transformResponse: function(data, headers) {
-                    return data;
-                }
             });
         }
 

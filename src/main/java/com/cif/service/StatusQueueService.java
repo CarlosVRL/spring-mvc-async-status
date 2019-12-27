@@ -1,12 +1,11 @@
 package com.cif.service;
 
 import org.springframework.stereotype.Component;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.Iterator;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
+import java.util.Map;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Component
@@ -14,7 +13,7 @@ public class StatusQueueService {
 
     private final AtomicLong jobId;
 
-    private final BlockingQueue<StatusJob> queue;
+    private final ConcurrentHashMap<Long, StatusJob> queue;
 
     private final ExecutorService statusExecutor;
 
@@ -24,44 +23,42 @@ public class StatusQueueService {
 
     public StatusQueueService(ExecutorService statusExecutor) {
         this.statusExecutor = statusExecutor;
-        queue = new ArrayBlockingQueue<>(1000);
+        queue = new ConcurrentHashMap<>();
         jobId = new AtomicLong(0L);
-        // test data
-        add("job1");
-        add("job2");
-        add("job3");
     }
 
     //
     // API
     //
 
-    public Iterator<StatusJob> iterator() {
-        return queue.iterator();
+    public Iterator<Map.Entry<Long, StatusJob>> iterator() {
+        return queue.entrySet().iterator();
     }
 
-    public Future<String> add(String msg) {
+    public StatusJob add(String msg) {
         return addJob(msg);
     }
 
     public StatusJob take() {
-        StatusJob res = null;
-        try {
-            res = queue.take();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return res;
+        throw new NotImplementedException();
     }
 
     //
     // Implementation
     //
 
-    private Future<String> addJob(String msg) {
+    private StatusJob addJob(String msg) {
         Long id = jobId.incrementAndGet();
         StatusJob statusJob = new StatusJob(id, msg);
-        queue.add(statusJob);
-        return statusExecutor.submit(statusJob);
+        queue.put(id, statusJob);
+        Future<StatusJob> future = statusExecutor.submit(statusJob);
+        StatusJob result = null;
+        try {
+            result = future.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        queue.remove(id);
+        return result;
     }
 }
