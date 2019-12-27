@@ -18,7 +18,8 @@
         function getStatus() {
             return $http({
                     method: 'GET',
-                    url: 'api/status'
+                    url: 'api/status',
+                    isArray: true
                 });
         }
 
