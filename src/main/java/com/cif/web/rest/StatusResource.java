@@ -19,9 +19,7 @@ public class StatusResource {
 
     private final StatusQueueService statusQueueService;
 
-    public StatusResource(
-        StatusQueueService statusQueueService
-    ) {
+    public StatusResource(StatusQueueService statusQueueService) {
         this.statusQueueService = statusQueueService;
     }
 
@@ -38,22 +36,8 @@ public class StatusResource {
 
     @PostMapping("/status/add-job")
     @Timed
-    public ResponseEntity<Void> addJob() {
-        statusQueueService.add("test");
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @PostMapping("/status/execute")
-    @Timed
-    public ResponseEntity<Long> execute() {
-        statusQueueService.add("my job");
-        return new ResponseEntity<>(0L, HttpStatus.OK);
-    }
-
-    @PostMapping("/status/execute-and-wait")
-    @Timed
-    public ResponseEntity<StatusJob> executeAndWait() throws Exception {
-        StatusJob result = statusQueueService.add("execute-and-wait");
+    public ResponseEntity<StatusJob> addJob() {
+        StatusJob result = statusQueueService.doWork("new-job");
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }

@@ -58,10 +58,8 @@
         function getStatus() {
             Status.getStatus()
                 .then(function success(res) {
-                    $log.debug('s');
                     vm.data = res.data;
                 }, function error(err) {
-                    $log.debug('e');
                     $log.debug(err);
                     vm.data = null;
                 });
