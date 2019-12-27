@@ -1,3 +1,36 @@
 <div>
-    hello
+
+    <button
+        type="button"
+        class="btn btn-primary"
+        ng-click="vm.addJob()"
+    >
+        Add Job
+    </button>
+
+    <button
+        type="button"
+        class="btn btn-primary"
+        ng-click="vm.takeJob()"
+    >
+        Take Job
+    </button>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Job Name</th>
+            <th scope="col">Status</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="job in vm.data">
+            <td>1</td>
+            <td>{{job}}</td>
+            <td>pending</td>
+        </tr>
+        </tbody>
+    </table>
+
 </div>
