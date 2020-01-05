@@ -22,7 +22,7 @@ Run with Maven:
 
 The relevant classes are:
 
-* StatusResource: the rest controller
+* link:https://github.com/CarlosVRL/spring-mvc-async-status/blob/master/src/main/java/com/cif/web/rest/StatusResource.java[StatusResource]: the rest controller
 
 * StatusQueueService: handles the tasking
 
