@@ -1,4 +1,4 @@
-= spring_mvc_async_status demo
+= spring-mvc-sync-status demo
 
 Add jobs and poll status using a Java task executor.
 
